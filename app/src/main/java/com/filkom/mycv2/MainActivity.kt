@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.filkom.mycv2.screen.Login
 import com.filkom.mycv2.screen.daftar
 import com.filkom.mycv2.screen.detail
@@ -40,14 +41,16 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val mainViewModel: MainViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
             Login(onLogin = { nim, nama, email ->
+                mainViewModel.login(nim, nama, email)
                 val route = "detail?nim=${URLEncoder.encode(nim, "UTF-8")}" +
                         "&nama=${URLEncoder.encode(nama, "UTF-8")}" +
                         "&email=${URLEncoder.encode(email, "UTF-8")}" +
-                        "&alamat=${URLEncoder.encode("", "UTF-8")}"
+                        "&alamat=${URLEncoder.encode("", "UTF-8") }"
                 navController.navigate(route)
             }, onDaftar = {
                 navController.navigate("daftar")
@@ -56,10 +59,11 @@ fun AppNavigation() {
 
         composable("daftar") {
             daftar(onSimpan = { nim: String, nama: String, email: String, alamat: String ->
+                mainViewModel.register(nim, nama, email, alamat)
                 val route = "detail?nim=${URLEncoder.encode(nim, "UTF-8")}" +
                         "&nama=${URLEncoder.encode(nama, "UTF-8")}" +
                         "&email=${URLEncoder.encode(email, "UTF-8")}" +
-                        "&alamat=${URLEncoder.encode(alamat, "UTF-8")}"
+                        "&alamat=${URLEncoder.encode(alamat, "UTF-8") }"
                 navController.navigate(route)
             })
         }
